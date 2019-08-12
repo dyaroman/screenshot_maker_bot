@@ -1,0 +1,17 @@
+{
+  "name": "screenshot_maker_bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^8.0.0",
+    "node-telegram-bot-api": "^0.30.0",
+    "puppeteer": "^1.19.0"
+  }
+}
