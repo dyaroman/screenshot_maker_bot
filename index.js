@@ -32,7 +32,9 @@ const makeScreenshot = (chatId, url, selector) => {
   }
 
   (async () => {
-    const browser = await puppeteer.launch({executablePath: '/usr/bin/chromium-browser'});
+    const browser = await puppeteer.launch({
+      executablePath: process.env.CHROME_PATH
+    });
     const page = await browser.newPage();
 
     try {
