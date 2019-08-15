@@ -12,6 +12,6 @@
   "dependencies": {
     "dotenv": "^8.0.0",
     "node-telegram-bot-api": "^0.30.0",
-    "puppeteer-core": "^1.19.0"
+    "puppeteer": "^1.19.0"
   }
 }

@@ -1,5 +1,5 @@
 const TelegramBot = require('node-telegram-bot-api');
-const puppeteer = require('puppeteer-core');
+const puppeteer = require('puppeteer');
 const fs = require('fs');
 require('dotenv').config();
 
@@ -32,9 +32,7 @@ const makeScreenshot = (chatId, url, selector) => {
   }
 
   (async () => {
-    const browser = await puppeteer.launch({
-      executablePath: process.env.CHROME_PATH
-    });
+    const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
     try {
