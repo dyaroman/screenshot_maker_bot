@@ -32,7 +32,7 @@ const makeScreenshot = (chatId, url, selector) => {
   }
 
   (async () => {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({args: ['--no-sandbox']});
     const page = await browser.newPage();
 
     try {
