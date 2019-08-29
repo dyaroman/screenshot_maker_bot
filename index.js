@@ -1,9 +1,18 @@
 const Telegraf = require('telegraf');
+const Scene = require('telegraf/scenes/base');
+const Stage = require('telegraf/stage');
+const session = require('telegraf/session');
 const puppeteer = require('puppeteer');
 require('dotenv').config();
 
 const bot = new Telegraf(process.env.TOKEN);
+const stage = new Stage();
+const screenshotScene = new Scene('screenshotScene');
 
+stage.register(screenshotScene);
+
+bot.use(session());
+bot.use(stage.middleware());
 
 bot.help((ctx) => {
   help(ctx);
@@ -13,33 +22,44 @@ bot.start((ctx) => {
   help(ctx);
 });
 
-bot.on('text', ctx => {
-  const text = ctx.message.text.trim().replace(/  +/gm, ' ');
-  const parameters = text.split(' ');
-  const COMMAND = parameters[0];
-  const URL = parameters[1];
-  const SELECTOR = parameters[2];
+bot.command('screenshot', (ctx) => {
+  const [, ...arguments] = ctx.message.text
+    .trim()
+    .split(' ');
 
-  if (COMMAND !== '/screenshot') {
-    return;
-  }
-
-  switch (parameters.length) {
-    case 2:
+  switch (arguments.length) {
+    case 1:
       //comand, url
-      makeScreenshot(ctx, URL);
+      makeScreenshot(ctx, arguments[0]);
       break;
-    case 3:
+    case 2:
       //command, url, selector
-      makeScreenshot(ctx, URL, SELECTOR);
+      makeScreenshot(ctx, arguments[0], arguments[1]);
       break;
     default:
       // no parameters
-      help(ctx);
+      ctx.reply(
+        'Please send me URL. \n'+
+        'Example: \n'+
+        '"https://example.com"'
+        );
+      ctx.scene.enter('screenshotScene');
   }
 });
 
-async function makeScreenshot(ctx, URL, SELECTOR) {
+screenshotScene.on('text', (ctx) => {
+  const [...arguments] = ctx.message.text.trim().split(' ');
+  if (arguments.length === 1) {
+    makeScreenshot(ctx, arguments[0]);
+  } else if (arguments.length === 2) {
+    makeScreenshot(ctx, arguments[0], arguments[1]);
+  }
+
+  ctx.scene.leave('screenshotScene');
+});
+
+async function makeScreenshot(ctx, url, SELECTOR) {
+  const URL = url.match(/^https?:\/\//) ? url : `https://${url}`;
   const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
   const page = await browser.newPage();
   let screenshot;
@@ -77,12 +97,13 @@ async function makeScreenshot(ctx, URL, SELECTOR) {
 };
 
 function help(ctx) {
-  ctx.reply(`
-Please run command /screenshot with URL parameter.\n
-Examples:
-"/screenshot https://google.com" - I will send you screenshot of the full page.\n
-"/screenshot https://google.com .content" - I will send you screenshot of ".content" block.
-`);
+  ctx.reply(
+    'Please run command "/screenshot".\n' +
+    'Examples:\n' +
+    '"/screenshot" - I will ask you about the URL.\n' +
+    '"/screenshot https://example.com" - I will send you screenshot of the full page.\n' +
+    '"/screenshot https://example.com h1" - I will send you screenshot of "h1" element.'
+  );
 }
 
 bot.startPolling();
