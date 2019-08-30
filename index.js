@@ -59,7 +59,7 @@ screenshotScene.on('text', (ctx) => {
 });
 
 async function makeScreenshot(ctx, url, SELECTOR) {
-  const URL = url.match(/^https?:\/\//) ? url : `https://${url}`;
+  const URL = /https?:\/\//.test(url) ? url : `https://${url}`;
   const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
   const page = await browser.newPage();
   let screenshot;
