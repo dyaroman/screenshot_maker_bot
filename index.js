@@ -107,3 +107,21 @@ function help(ctx) {
 }
 
 bot.startPolling();
+
+process.on('unhandledRejection', (reason, promise) => {
+    const errorMessage = `Unhandled Rejection at: promise, reason: ${reason}`;
+    console.error(errorMessage);
+    console.error(promise);
+    sendToAdmin(errorMessage);
+});
+
+process.on('uncaughtException', (error) => {
+    sendToAdmin(`Uncaught Exception! ${(new Date).toUTCString()}, ${error}`);
+    console.error(`${(new Date).toUTCString()} uncaughtException: ${error.message}`);
+    console.error(err.stack);
+    process.exit(1);
+});
+
+async function sendToAdmin(message) {
+    await this.bot.telegram.sendMessage(process.env.DEV_ID, message);
+}
