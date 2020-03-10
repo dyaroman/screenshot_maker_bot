@@ -123,5 +123,5 @@ process.on('uncaughtException', (error) => {
 });
 
 async function sendToAdmin(message) {
-    await this.bot.telegram.sendMessage(process.env.DEV_ID, message);
+    await bot.telegram.sendMessage(process.env.DEV_ID, message);
 }

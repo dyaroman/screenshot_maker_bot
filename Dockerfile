@@ -1,5 +1,5 @@
 FROM node:10.15.3-slim@sha256:88da5cd281ece24309c4e6fcce000a8001b17804e19f94a0439954568716a668
-    
+
 RUN  apt-get update \
      # Install latest chrome dev package, which installs the necessary libs to
      # make the bundled version of Chromium that Puppeteer installs work.
@@ -15,5 +15,5 @@ RUN  apt-get update \
 WORKDIR /usr/src/app
 COPY package* ./
 RUN npm i
-COPY . .
+COPY index.js ./
 CMD npm start
